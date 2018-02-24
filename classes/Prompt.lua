@@ -1,5 +1,5 @@
 local utf8 = require('utf8')
-Object = require 'libraries/classic'
+Object = require 'libraries/classic/classic'
 
 Prompt = Object:extend()
 
