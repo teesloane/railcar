@@ -17,19 +17,17 @@
 (defn prompt
   "Prompt console."
   []
-      ;; handle-key-press #(when (= (.-key %) "Enter")
-      ;;                     (re/dispatch [::events/enter-prompt prompt-val])
-      ;;                     (reset! prompt-val ""))]
 
   (fn []
     (let [prompt @(re/subscribe [::subs/prompt])
-          ]
+          handle-change #(re/dispatch [::events/change-prompt
+                                       (-> % .-target .-value)])
+          handle-enter #(when (= (.-key %) "Enter")
+                          (re/dispatch [::events/enter-prompt prompt]))]
       [:div.prompt
        [:div  {:style {:margin-top "-1px" }} ">"]
        [:input {:placeholder "Enter a  command..."
                 :value prompt
-                :on-change  #(re/dispatch [::events/change-prompt
-                                           (-> % .-target .-value)])
-                ;; :on-key-press  handle-key-press
-                }
-        ]])))
+                :on-change handle-change
+                :on-key-press  handle-enter
+                }]])))

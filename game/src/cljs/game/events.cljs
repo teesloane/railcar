@@ -12,11 +12,10 @@
  (fn [db [_ active-panel]]
    (assoc db :active-panel active-panel)))
 
-;; (re-frame/reg-event-db
-;;   ::enter-prompt
-;;   (fn [db [_ prompt]]
-;;     (assoc db :prompt prompt)
-;;     db))
+(re-frame/reg-event-db
+  ::enter-prompt
+  (fn [db [_ prompt]]
+    (assoc db :prompt "")))
 
 (re-frame/reg-event-db
   ::change-prompt
