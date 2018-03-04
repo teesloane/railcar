@@ -14,8 +14,13 @@
 
 ;; game subs
 
-;; get story text
+;; get story
 (reg-sub
  ::gst
  (fn [db _]
-   (-> db :current-room :story :missed-train :text)))
+   (-> db :current-room :missed-train)))
+
+(reg-sub
+  ::prompt
+  (fn [db _]
+    (:prompt db)))

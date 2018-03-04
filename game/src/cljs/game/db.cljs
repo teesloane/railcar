@@ -2,5 +2,5 @@
   (:require [game.rooms.intro :refer [intro]]))
 
 (def default-db
-   {:current-room intro}
-  )
+   {:current-room intro
+    :prompt ""})
