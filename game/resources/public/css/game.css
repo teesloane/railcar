@@ -1,0 +1,29 @@
+.frame {
+  background: #333333;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.display {
+  display: flex;
+  flex-grow: 1;
+  padding: 16px;
+  color: #fafafa;
+}
+.prompt {
+  display: flex;
+  padding: 0 16px;
+  align-items: center;
+  color: #777;
+}
+.prompt input {
+  display: flex;
+  flex-grow: 1;
+  font-size: 14px;
+  background: #333333;
+  color: #fafafa;
+  outline: none;
+  padding: 16px;
+}

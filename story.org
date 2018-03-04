@@ -1,5 +1,8 @@
 You miss the subway. A new one will be coming shortly, though.
 
+~use your prompt to interact with your surroundings.~
+~|observe | take | walk | etc |~
+
 You see a small notepad on the ground near the tunnel entrace. You walk over to it and pick it up, as if no one is around (of course there /are/ people around; hordes of people. The after work rush).
 
 You board the next subway and grab a seat; everyone around you is maybe a ghost today; you could have passed through them as you waited to get on the subway.
@@ -12,7 +15,7 @@ The light, now at least twice in size, bounces around the train.
 
 > observe
 
-The train is new; or, at least different. The train is a cavern. You see the glimmer of subterranean rocks catching the refracted light of the lantern.
+The train is new; or, at least different. The train is a cavern. You see the glimmer of subterranean rocks catching the refracted light from the lantern.
 
 > walk north (towards lantern)
 
@@ -20,9 +23,9 @@ You bump into something.
 
 > observe.
 
-In the dim light you assume that the train-cavern has stalagmites; but it could just be a subway seat. You think you see a WATCH.
+In the dim light you assume that the train-cavern has stalagmites; but it could just be a subway seat that you bumped into. On it, you think you see a WATCH.
 
-> pick up watch
+> take watch
 
 The watch is bulky, it has three buttons on the side.
 

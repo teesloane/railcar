@@ -1,0 +1,34 @@
+@import "vars";
+.frame {
+  background: @black;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center
+}
+
+
+.display {
+  display: flex;
+  flex-grow: 1;
+  padding: 16px;
+  color: @white;
+}
+
+.prompt {
+  display: flex;
+  padding: 0 16px;
+  align-items: center;
+  color: #777;
+
+  input {
+    display: flex;
+    flex-grow: 1;
+    font-size: 14px;
+    background: @black;
+    color: @white;
+    outline: none;
+    padding: 16px;
+  }
+}
