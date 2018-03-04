@@ -1,0 +1,46 @@
+You miss the subway. A new one will be coming shortly, though.
+
+You see a small notepad on the ground near the tunnel entrace. You walk over to it and pick it up, as if no one is around (of course there /are/ people around; hordes of people. The after work rush).
+
+You board the next subway and grab a seat; everyone around you is maybe a ghost today; you could have passed through them as you waited to get on the subway.
+
+After two stops, the lights go out. The subway is currently in a tunnel. You know that if the lights come back on, everyone inside will be gone - just like a movie -- just like the ghosts they were before you got on the subway car.
+
+The lights don't go on just yet. Instead, you hear a scratching sound, followed by a flare of light. Someone has lit a match and you watch as it recedes away from you, toward the front of the subway car. The flame slows it's dance to a stop, and disappears for a moment before reappearing; now housed in a lantern.
+
+The light, now at least twice in size, bounces around the train.
+
+> observe
+
+The train is new; or, at least different. The train is a cavern. You see the glimmer of subterranean rocks catching the refracted light of the lantern.
+
+> walk north (towards lantern)
+
+You bump into something.
+
+> observe.
+
+In the dim light you assume that the train-cavern has stalagmites; but it could just be a subway seat. You think you see a WATCH.
+
+> pick up watch
+
+The watch is bulky, it has three buttons on the side.
+
+> Push button 1
+
+Nothing (seems to) happens.
+
+> push button 2
+
+ditto
+
+
+> Push button 3
+
+A Red light blinks on the watch intermittently
+
+> observe watch
+
+The watch has a 12 o'clock on it, but that is all. There are no other numbers and no watch hands. You think to yourself that the watch is like a compass, where 12 is NORTH. It seems that you can only go NORTH.
+
+
