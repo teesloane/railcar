@@ -237,8 +237,9 @@ samp {
 }
 .display {
   display: flex;
+  flex-direction: column;
   flex-grow: 1;
-  padding: 16px;
+  padding: 24px;
   color: #fafafa;
 }
 .prompt {

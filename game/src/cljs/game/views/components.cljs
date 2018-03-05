@@ -6,18 +6,17 @@
 
 (defn display
   []
-  (let [story @(re/subscribe [::subs/gst])
-        prompt @(re/subscribe [::subs/prompt])
-        #_text #_(-> story :actions prompt)]
+  (let [room            @(re/subscribe [::subs/current-room])
+        prompt          @(re/subscribe [::subs/prompt])
+        curr-cmd        @(re/subscribe [::subs/current-command])
+        curr-step       @(re/subscribe [::subs/current-step])]
     [:div.display
-     [:div prompt]
-     [:div (:text story)]
-     #_[:div text]]))
+     [:div curr-step]
+     [:div.py3 curr-cmd]]))
 
 (defn prompt
   "Prompt console."
   []
-
   (fn []
     (let [prompt @(re/subscribe [::subs/prompt])
           handle-change #(re/dispatch [::events/change-prompt
@@ -26,8 +25,7 @@
                           (re/dispatch [::events/enter-prompt prompt]))]
       [:div.prompt
        [:div  {:style {:margin-top "-1px" }} ">"]
-       [:input {:placeholder "Enter a  command..."
+       [:input {:placeholder "Enter a command..."
                 :value prompt
                 :on-change handle-change
-                :on-key-press  handle-enter
-                }]])))
+                :on-key-press  handle-enter}]])))

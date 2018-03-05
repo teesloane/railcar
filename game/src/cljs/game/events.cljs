@@ -2,6 +2,8 @@
   (:require [re-frame.core :as re-frame]
             [game.db :as db]))
 
+;; -- General Events --
+
 (re-frame/reg-event-db
  ::initialize-db
  (fn  [_ _]
@@ -12,12 +14,24 @@
  (fn [db [_ active-panel]]
    (assoc db :active-panel active-panel)))
 
+;; --  Prompt Events --
+
+;; Looks hairy. Basically we are using the db's "current" keys, to drill
+;; down into the content itself to shape it.
 (re-frame/reg-event-db
   ::enter-prompt
   (fn [db [_ prompt]]
-    (assoc db :prompt "")))
+    ;; prompt -> keyword -> get curr step # -> get command via those two.
+    (let [prompt-key (keyword prompt)
+          step-idx (db :current-step)
+          curr-cmd (-> db :current-room :steps (get step-idx) :commands prompt-key)]
+      (-> db
+          (assoc :prompt "")
+          (assoc :current-command curr-cmd)))))
 
 (re-frame/reg-event-db
   ::change-prompt
   (fn [db [_ prompt]]
     (assoc db :prompt prompt)))
+
+

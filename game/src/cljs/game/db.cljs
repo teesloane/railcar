@@ -3,4 +3,10 @@
 
 (def default-db
    {:current-room intro
-    :prompt ""})
+    :current-command ""
+    :current-step 0
+    :prompt ""
+
+    ;; rooms -- to be organized later.
+    :intro intro
+    })
