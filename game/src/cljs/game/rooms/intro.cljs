@@ -4,20 +4,16 @@
 
 (def intro
   {:complete? false
-   :steps {:missed-train ;; our current step, in a room.
-           ;; Text is the piece of story that confronts the player.
-           {:text "You miss the subway. A new one will be coming shortly, though."
-            ;; Commands is a map of possible events the user can put into the prompt.
-            ;; what the user types is currently used as a getter at these values.
-            ;; ie. typing "observe" will convert the string to a keyword, and use it to fetch
-            ;; the observe value from this map.
-            :commands {:observe {:text "you look around."
-                                 ;; an event is a thing to trigger when :observe is called,
-                                 ;; where the key is a re-frame event to trigger and the val the event value.
-                                 :events {:go-to-step :missed-boat}}}}
+   :steps
+   {:missed-train
+    {:text "You miss the subway. A new one will be coming shortly, though."
+     :commands {:observe {:text "You see a small notepad on the ground near the subway tunnel entrance."
+                          :events [{:event :go-to-step :event-val :next-subway :delay 10000}
+                                   {:event :go-to-step :event-val :missed-train :delay 20000}
+                                   ]}}}
 
 
-
-           :missed-boat {:text "You miss A boat"
-                         :commands {:observe {:text "it is very wet."
-                                              :events {:go-to-step :next-thing!}}}}}})
+    :next-subway
+    {:text "The next subway rolls into the station."
+     :commands {:observe {:text "it is very wet."
+                          :events {:go-to-step :next-thing!}}}}}})

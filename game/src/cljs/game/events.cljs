@@ -1,6 +1,7 @@
 (ns game.events
-  (:require [re-frame.core :as re-frame]
-            [game.db :as db]))
+  (:require [game.db :as db]
+            [game.util :as u]
+            [re-frame.core :as re-frame]))
 
 ;; -- General Events --
 
@@ -21,15 +22,22 @@
 (re-frame/reg-event-db
  ::enter-prompt
  (fn [db [_ prompt]]
-   ;; prompt -> keyword -> get curr step # -> get command via those two.
-   (let [prompt-key (keyword prompt) ; "observe" -> :observe
-         step-idx (db :current-step)
-         curr-cmd (-> db :current-room :steps (get step-idx) :commands prompt-key)
-         new-db (-> db
-                    (assoc :prompt "")
-                    (assoc :current-command curr-cmd))]
+   (let [prompt-key    (keyword prompt) ; "observe" -> :observe
+         curr-step     (db :current-step)
+         curr-cmd      (-> db :current-room :steps (get curr-step) :commands prompt-key)
+         events        (curr-cmd :events) ;; sort this by their delays, least to greatest.
+         events-sorted (sort-by :delay events)
+         new-db        (-> db
+                           (assoc :prompt "")
+                           (assoc :current-command curr-cmd))]
 
-     (doseq [event (-> curr-cmd :events)] (re-frame/dispatch event))
+     ;; Run every event in a command's data structure.
+     (doseq [{:keys [event event-val delay]} events-sorted]
+       (if delay
+         (u/sleep delay #(re-frame/dispatch [event event-val]))
+         (re-frame/dispatch [event event-val])))
+
+     ;; return new db once all events are dispatched.
      new-db)))
 
 (re-frame/reg-event-db
