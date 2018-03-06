@@ -22,12 +22,15 @@
   ::enter-prompt
   (fn [db [_ prompt]]
     ;; prompt -> keyword -> get curr step # -> get command via those two.
-    (let [prompt-key (keyword prompt)
+    (let [prompt-key (keyword prompt) ; "observe" -> :observe
           step-idx (db :current-step)
-          curr-cmd (-> db :current-room :steps (get step-idx) :commands prompt-key)]
-      (-> db
-          (assoc :prompt "")
-          (assoc :current-command curr-cmd)))))
+          curr-cmd (-> db :current-room :steps (get step-idx) :commands prompt-key)
+          new-db (-> db
+                     (assoc :prompt "")
+                     (assoc :current-command curr-cmd))]
+
+        (doseq [event (-> curr-cmd :events)] (re-frame/dispatch event)
+          new-db))))
 
 (re-frame/reg-event-db
   ::change-prompt
@@ -36,6 +39,6 @@
 
 
 (re-frame/reg-event-db
- ::go-to-step
+ :go-to-step
  (fn [db [_ step]]
    (assoc db :current-step step)))
