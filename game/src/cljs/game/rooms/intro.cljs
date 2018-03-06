@@ -14,14 +14,9 @@
             :commands {:observe {:text "you look around."
                                  ;; an event is a thing to trigger when :observe is called,
                                  ;; where the key is a re-frame event to trigger and the val the event value.
-<<<<<<< HEAD
                                  :events {:go-to-step :missed-boat}}}}
-                                          ; :go-to-step2 :very-chill
 
-=======
-                                 :events {:go-to-step :missed-boat
-                                          :go-to-step2 :very-chill}}}}
->>>>>>> bddc1a7d6283c64da23520491bb76d85df6e200d
+
 
            :missed-boat {:text "You miss A boat"
                          :commands {:observe {:text "it is very wet."
