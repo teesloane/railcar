@@ -36,6 +36,6 @@
 
 
 (re-frame/reg-event-db
- ::go-to-step
+ :go-to-step
  (fn [db [_ step]]
    (assoc db :current-step step)))
