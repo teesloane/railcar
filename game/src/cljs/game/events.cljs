@@ -35,3 +35,7 @@
     (assoc db :prompt prompt)))
 
 
+(re-frame/reg-event-db
+ ::go-to-step
+ (fn [db [_ step]]
+   (assoc db :current-step step)))

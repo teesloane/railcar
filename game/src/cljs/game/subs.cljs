@@ -16,6 +16,4 @@
 (reg-sub ::current-command (fn [db _] (:current-command db)))
 (reg-sub ::current-step
          (fn [db _]
-           (let [idx (-> db :current-step)]
-             (-> db :current-room :steps (get idx) :text))))
-
+           (get-in db [:current-room :steps (db :current-step)])))
