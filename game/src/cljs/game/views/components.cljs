@@ -5,16 +5,19 @@
             [game.events :as e]))
 
 
+;; try this thing out
+;; https://lambdaisland.com/blog/11-02-2017-re-frame-form-1-subscriptions
+;; (def <sub (comp deref re-frame.core/subscribe))
+;; (def >evt re-frame.core/dispatch)
 
 (defn display
   []
-  (let [prompt      @(re/subscribe [::subs/prompt])
-        history     @(re/subscribe [::subs/history])
+  (let [history     @(re/subscribe [::subs/history])
         curr-text   @(re/subscribe [::subs/current-text])]
 
     [:div.display
      (for [s history]
-       [:div {:style {:color "grey"} :key (random-uuid)} s])
+       [:div {:style {:color "grey" :padding-bottom "8px"} :key (random-uuid)} s])
      [:div.py1 curr-text]]))
 
 

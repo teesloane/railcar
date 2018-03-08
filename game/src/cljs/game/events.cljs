@@ -17,31 +17,23 @@
 
 ;; --  Prompt Events --
 
-(defn get-step-key
-  [db k]
-  (let [current-step (db :current-step)]
-    (get-in db [:current-room :steps current-step])
-    (-> db :current-room :step)))
 
-;; Looks hairy. Basically we are using the db's "current" keys, to drill
-;; down into the content itself to shape it.
-
+;; TODO move this somewhere else
+(defn get-curr-step
+  [db & keys]
+  (let [curr-step (db :current-step)]
+    (get-in db (concat [:current-room :steps curr-step] keys))))
 
 ;; 1. resets prompt
-;; 2a. load up command for current step -if any
-;; 2b. Sort any events command might have (ie, "observe" might trigger a sound playinger after 4 s)
-;; 2c. sort events by how much delay they have.
-;; 2d. Dispatch all events for a command.
+;; 2. use the prompt value to get the `:commands` for the current-step
+;; 3. move the current text into the `:history` vector.
+;; 4. Dispatch all events for the prompts-command.
 (re-frame/reg-event-db
  ::enter-prompt
  (fn [db [_ prompt]]
    (let [prompt-key    (keyword prompt) ; "observe" -> :observe
-         curr-step     (db :current-step)
-         ;; helper functions for this please.
-         curr-cmd      (-> db :current-room :steps (get curr-step) :commands prompt-key) ;; todo - handle case where prompt input doesnt exist on story map.
-         curr-step-txt (-> db :current-room :steps (get curr-step) :text)
-         events        (get curr-cmd :events) ;; sort this by their delays, least to greatest.
-         events-sorted (sort-by :delay events)
+         curr-step-txt (get-curr-step db :text)
+         cmd-events    (sort-by :delay (get-curr-step db :commands prompt-key))
          ;; clear prompt; push last text into history; set new text.
          new-db        (-> db
                            (assoc :prompt "")
@@ -49,7 +41,7 @@
                            (assoc :current-text ""))]
 
      ;; Run every event in a command's data structure.
-     (doseq [{:keys [event event-val delay]} events-sorted]
+     (doseq [{:keys [event event-val delay]} cmd-events]
        (if delay
          (u/sleep delay #(re-frame/dispatch [event event-val]))
          (re-frame/dispatch [event event-val])))

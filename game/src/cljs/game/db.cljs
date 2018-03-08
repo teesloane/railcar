@@ -6,7 +6,7 @@
   {:current-room intro
    :current-command ""
    :current-step :missed-train ;; hard baked in for now.
-   :current-text (-> intro :steps :missed-train :text)
+   :current-text (-> intro :steps :missed-train :text) ;; ui only!
    :history []
    ;; --
    :prompt ""
