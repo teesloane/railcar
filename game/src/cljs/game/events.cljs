@@ -17,19 +17,36 @@
 
 ;; --  Prompt Events --
 
+(defn get-step-key
+  [db k]
+  (let [current-step (db :current-step)]
+    (get-in db [:current-room :steps current-step])
+    (-> db :current-room :step)))
+
 ;; Looks hairy. Basically we are using the db's "current" keys, to drill
 ;; down into the content itself to shape it.
+
+
+;; 1. resets prompt
+;; 2a. load up command for current step -if any
+;; 2b. Sort any events command might have (ie, "observe" might trigger a sound playinger after 4 s)
+;; 2c. sort events by how much delay they have.
+;; 2d. Dispatch all events for a command.
 (re-frame/reg-event-db
  ::enter-prompt
  (fn [db [_ prompt]]
    (let [prompt-key    (keyword prompt) ; "observe" -> :observe
          curr-step     (db :current-step)
-         curr-cmd      (-> db :current-room :steps (get curr-step) :commands prompt-key)
-         events        (curr-cmd :events) ;; sort this by their delays, least to greatest.
+         ;; helper functions for this please.
+         curr-cmd      (-> db :current-room :steps (get curr-step) :commands prompt-key) ;; todo - handle case where prompt input doesnt exist on story map.
+         curr-step-txt (-> db :current-room :steps (get curr-step) :text)
+         events        (get curr-cmd :events) ;; sort this by their delays, least to greatest.
          events-sorted (sort-by :delay events)
+         ;; clear prompt; push last text into history; set new text.
          new-db        (-> db
                            (assoc :prompt "")
-                           (assoc :current-command curr-cmd))]
+                           (update :history conj curr-step-txt)
+                           (assoc :current-text ""))]
 
      ;; Run every event in a command's data structure.
      (doseq [{:keys [event event-val delay]} events-sorted]
@@ -49,4 +66,7 @@
 (re-frame/reg-event-db
  :go-to-step
  (fn [db [_ step]]
-   (assoc db :current-step step)))
+   (let [next-text (-> db :current-room :steps step :text)]
+     (-> db
+         (assoc :current-step step)
+         (assoc :current-text next-text)))))

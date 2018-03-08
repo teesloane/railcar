@@ -4,16 +4,19 @@
             [game.subs :as subs]
             [game.events :as e]))
 
+
+
 (defn display
   []
-  (let [room        @(re/subscribe [::subs/current-room])
-        prompt      @(re/subscribe [::subs/prompt])
-        curr-cmd    @(re/subscribe [::subs/current-command])
-        curr-step   @(re/subscribe [::subs/current-step])]
+  (let [prompt      @(re/subscribe [::subs/prompt])
+        history     @(re/subscribe [::subs/history])
+        curr-text   @(re/subscribe [::subs/current-text])]
 
     [:div.display
-     [:div (get curr-step :text "default text. Fix me someday!")]
-     [:div.py3 (get curr-cmd :text "default text2 Fix me somday!")]]))
+     (for [s history]
+       [:div {:style {:color "grey"} :key (random-uuid)} s])
+     [:div.py1 curr-text]]))
+
 
 (defn prompt
   "Prompt console."

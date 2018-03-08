@@ -12,8 +12,10 @@
 
 (reg-sub ::active-panel    (fn [db _] (:active-panel db)))
 (reg-sub ::prompt          (fn [db _] (:prompt db)))
+(reg-sub ::history         (fn [db _] (-> db :history)))
 (reg-sub ::current-room    (fn [db _] (-> db :current-room)))
 (reg-sub ::current-command (fn [db _] (:current-command db)))
+(reg-sub ::current-text    (fn [db _] (:current-text db)))
 (reg-sub ::current-step
          (fn [db _]
            (get-in db [:current-room :steps (db :current-step)])))
