@@ -17,9 +17,7 @@
 (reg-sub ::current-room    (fn [db _] (-> db :current-room)))
 (reg-sub ::current-command (fn [db _] (:current-command db)))
 (reg-sub ::current-text    (fn [db _] (:current-text db)))
-(reg-sub ::current-step
-         (fn [db _]
-           (get-in db [:current-room :steps (db :current-step)])))
+(reg-sub ::current-step    (fn [db _] (:current-step db)))
 
 
 ;; Computed Subscriptions --

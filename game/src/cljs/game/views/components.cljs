@@ -38,7 +38,6 @@
         prompt-opts      (<sub [::subs/possible-prompts])
         prompt-opts?     (not (empty? prompt-opts))]
 
-    (println prompt-opts? prompt-opts)
     [:div.display
      (for [s history] [:div.history-text {:key (random-uuid)} s])
      [:div.prompt-text curr-text]

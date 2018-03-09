@@ -4,11 +4,24 @@
             [re-frame.core :as re-frame]))
 
 
+(defn batch-events
+  "takes a list of custom events formatted for re-frame and dispatches them.
+  ex: {:event :re-frame-event :event-val :re-frame-event-val :delay 5000}
+  Events can be delayed and will be sorted by soonest-to-latest in execution order."
+  [events]
+  (let [sorted-events (sort-by :delay events)]
+    (doseq [{:keys [event event-val delay]} sorted-events]
+      (if delay
+        (u/sleep delay #(re-frame/dispatch [event event-val]))
+        (re-frame/dispatch [event event-val])))))
+
+
 ;; -- General Events --
 
 (re-frame/reg-event-db
  ::initialize-db
  (fn  [_ _]
+   (re-frame/dispatch [:go-to-step :missed-train])
    db/default-db))
 
 (re-frame/reg-event-db
@@ -18,38 +31,39 @@
 
 ;; --  Prompt Events --
 
-;; 1. resets prompt
-;; 2. use the prompt value to get the `:commands` for the current-step
-;; 3. Dispatch all events for the prompts-command.
+;; reset prompt -> use prompt val to get commands -. dispatch events for cmd.
 (re-frame/reg-event-db
  ::enter-prompt
  (fn [db [_ prompt]]
    (let [prompt-key    (keyword prompt) ; "observe" -> :observe
          curr-step-txt (u/get-curr-step db :text)
-         cmd-events    (sort-by :delay (u/get-curr-step db :commands prompt-key))]
-
-     ;; Run every event in a command's data structure.
-     (doseq [{:keys [event event-val delay]} cmd-events]
-       (if delay
-         (u/sleep delay #(re-frame/dispatch [event event-val]))
-         (re-frame/dispatch [event event-val])))
-
-     ;; return new db once all events are dispatched.
+         cmd-events    (u/get-curr-step db :commands prompt-key)]
+     (batch-events cmd-events)
      (assoc db :prompt ""))))
 
 
 (re-frame/reg-event-db
-  ::change-prompt
-  (fn [db [_ prompt]]
-    (assoc db :prompt prompt)))
+ ::change-prompt
+ (fn [db [_ prompt]]
+   (assoc db :prompt prompt)))
 
 
 (re-frame/reg-event-db
- :go-to-step
+ :go-to-step ;; needs to be a global keyword; is used by datastructures
  (fn [db [_ next-step]]
-   (let [next-text (-> db :current-room :steps next-step :text)
+   (let [next-text     (-> db :current-room :steps next-step :text)
          curr-step-txt (u/get-curr-step db :text)]
+     (re-frame/dispatch [::current-step-events])
      (-> db
          (assoc :current-step next-step)
          (update :history conj curr-step-txt)
          (assoc :current-text next-text)))))
+
+
+(re-frame/reg-event-db
+ ::current-step-events
+ (fn [db [_ _]]
+   (batch-events (u/get-curr-step db :events))
+   db))
+
+

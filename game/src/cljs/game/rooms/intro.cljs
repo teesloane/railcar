@@ -1,4 +1,5 @@
-(ns game.rooms.intro)
+(ns game.rooms.intro
+  (:require [game.rooms.event-builder :as ev]))
 
 (def intro
   {:complete? false
@@ -6,19 +7,16 @@
    :steps
    {:missed-train
     {:text "You miss the subway. A new one will be coming shortly, though."
-     :commands {:observe [{:event :go-to-step :event-val :next-subway}]}} ;; could delay this.
-
-
-    ;; :notebook
-    ;; {:text "You see a small notepad on the ground near the subway tunnel entrance."}
+     :events [(ev/go-to-step :next-subway 1000)]}
 
     :next-subway
     {:text "The next subway rolls into the station."
-     :commands {:board [{:event :go-to-step :event-val :board-subway}
-                        {:event :go-to-step :event-val :two-stops :delay 8000}]}}
+     :events [(ev/go-to-step :missed-train 25000)]
+     :commands {:board [{:event :go-to-step :event-val :board-subway}]}}
 
     :board-subway
     {:text "You board the subway and grab a seat; everyone around you is maybe a ghost today; you could have passed through them as you waited to board."
+     :events [(ev/go-to-step :two-stops 8000)]
      :commands {}}
 
     :two-stops
