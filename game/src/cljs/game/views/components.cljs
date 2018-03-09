@@ -2,18 +2,17 @@
   (:require [re-frame.core :as re]
             [reagent.core :as r]
             [game.subs :as subs]
-            [game.events :as e]))
+            [game.events :as e]
+            [game.util :refer [<sub >evt]]))
 
 
-;; try this thing out
-;; https://lambdaisland.com/blog/11-02-2017-re-frame-form-1-subscriptions
-;; (def <sub (comp deref re-frame.core/subscribe))
-;; (def >evt re-frame.core/dispatch)
 
 (defn display
+  "Displays the story."
   []
-  (let [history     @(re/subscribe [::subs/history])
-        curr-text   @(re/subscribe [::subs/current-text])]
+  (let [history          (<sub [::subs/history])
+        curr-text        (<sub [::subs/current-text])
+        possible-prompts (<sub [::subs/possible-prompts])]
 
     [:div.display
      (for [s history]
@@ -24,10 +23,10 @@
 (defn prompt
   "Prompt console."
   []
-  (let [prompt        @(re/subscribe [::subs/prompt])
-        handle-change #(re/dispatch [::e/change-prompt (-> % .-target .-value)])
+  (let [prompt        (<sub [::subs/prompt])
+        handle-change #(>evt [::e/change-prompt (-> % .-target .-value)])
         handle-enter  #(when (= (.-key %) "Enter")
-                         (re/dispatch [::e/enter-prompt prompt]))]
+                         (>evt [::e/enter-prompt prompt]))]
     [:div.prompt
      [:div  {:style {:margin-top "-1px" }} ">"]
      [:input {:placeholder "Enter a command..."

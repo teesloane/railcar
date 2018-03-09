@@ -6,7 +6,8 @@
    :steps
    {:missed-train
     {:text "You miss the subway. A new one will be coming shortly, though."
-     :commands {:observe [{:event :go-to-step :event-val :next-subway}]}}
+     :commands {:observe [{:event :go-to-step :event-val :next-subway}]}} ;; could delay this.
+
 
     ;; :notebook
     ;; {:text "You see a small notepad on the ground near the subway tunnel entrance."}
@@ -14,7 +15,7 @@
     :next-subway
     {:text "The next subway rolls into the station."
      :commands {:board [{:event :go-to-step :event-val :board-subway}
-                        {:event :go-to-step :event-val :two-stops :delay 8000}]}} ;; <<< Do we want to do this here, or when an event starts for the first time??
+                        {:event :go-to-step :event-val :two-stops :delay 8000}]}}
 
     :board-subway
     {:text "You board the subway and grab a seat; everyone around you is maybe a ghost today; you could have passed through them as you waited to board."

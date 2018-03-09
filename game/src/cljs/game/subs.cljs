@@ -1,5 +1,6 @@
 (ns game.subs
-  (:require [re-frame.core :as re-frame :refer [reg-sub]]))
+  (:require [re-frame.core :as re-frame :refer [reg-sub]]
+            [game.util :as u]))
 
 ;; -- top level subs --
 
@@ -19,3 +20,14 @@
 (reg-sub ::current-step
          (fn [db _]
            (get-in db [:current-room :steps (db :current-step)])))
+
+
+;; Computed Subscriptions --
+
+;; Gets a lit of possible pompts and displays them
+;; allows the user to know what they can do.
+(reg-sub
+ ::possible-prompts
+ (fn [db _]
+   (keys (u/get-curr-step db :commands))))
+
