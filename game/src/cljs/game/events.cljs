@@ -1,6 +1,6 @@
 (ns game.events
   (:require [game.db :as db]
-            [game.util :as u]
+            [game.util :as u :refer [>evt]]
             [re-frame.core :as re-frame]))
 
 
@@ -10,10 +10,10 @@
   Events can be delayed and will be sorted by soonest-to-latest in execution order."
   [events]
   (let [sorted-events (sort-by :delay events)]
-    (doseq [{:keys [event event-val delay]} sorted-events]
-      (if delay
-        (u/sleep delay #(re-frame/dispatch [event event-val]))
-        (re-frame/dispatch [event event-val])))))
+    (doseq [{:keys [event event-val delay opts]} sorted-events]
+      (cond
+        delay       (u/sleep delay #(>evt [event event-val]))
+        :else       (>evt [event event-val])))))
 
 
 ;; -- General Events --

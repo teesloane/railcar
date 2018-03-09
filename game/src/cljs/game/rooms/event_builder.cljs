@@ -5,5 +5,6 @@
   [next-step delay]
   {:event :go-to-step
    :event-val next-step
-   :delay delay})
+   :delay delay
+   :opts opts})
 

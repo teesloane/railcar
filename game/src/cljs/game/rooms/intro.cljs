@@ -11,7 +11,9 @@
 
     :next-subway
     {:text "The next subway rolls into the station."
-     :events [(ev/go-to-step :missed-train 25000)]
+     ;; This one doesn't work until we find a way to only execute this delay if
+     ;; we are still on the same step.
+     ;; :events [(ev/go-to-step :missed-train 25000 {:required-step :next-subway})]
      :commands {:board [{:event :go-to-step :event-val :board-subway}]}}
 
     :board-subway
@@ -21,5 +23,6 @@
 
     :two-stops
     {:text "After two stops, the lights go out. The subway is currently in a tunnel. You know that if the lights come back on, everyone inside will be gone - just like a movie -- just like the ghosts they were before you got on the subway car."}}})
+
 
 
