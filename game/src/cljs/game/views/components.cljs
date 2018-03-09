@@ -16,8 +16,8 @@
 
     [:div.display
      (for [s history]
-       [:div {:style {:color "grey" :padding-bottom "8px"} :key (random-uuid)} s])
-     [:div.py1 curr-text]]))
+       [:div.history-text {:key (random-uuid)} s])
+     [:div.prompt-text curr-text]]))
 
 
 (defn prompt

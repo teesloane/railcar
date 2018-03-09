@@ -14,6 +14,16 @@
   padding: 24px 24px 8px 24px;
   color: #fafafa;
 }
+.history-text {
+  color: #888888;
+  padding-bottom: 8px;
+  line-height: 1.25;
+}
+.prompt-text {
+  color: #fafafa;
+  line-height: 1.25;
+  padding: 8px 0 16px 0;
+}
 .prompt {
   display: flex;
   padding: 0 16px;
