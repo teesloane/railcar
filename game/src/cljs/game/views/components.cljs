@@ -7,17 +7,6 @@
 
 
 
-(defn display
-  "Displays the story."
-  []
-  (let [history          (<sub [::subs/history])
-        curr-text        (<sub [::subs/current-text])
-        possible-prompts (<sub [::subs/possible-prompts])]
-
-    [:div.display
-     (for [s history]
-       [:div.history-text {:key (random-uuid)} s])
-     [:div.prompt-text curr-text]]))
 
 
 (defn prompt
@@ -33,3 +22,28 @@
               :value prompt
               :on-change handle-change
               :on-key-press  handle-enter}]]))
+
+(defn prompt-options
+  "Display a list of prompts the user can type in."
+  [prompts]
+  [:ul.prompt-opt
+     (for [p prompts]
+        [:li {:key (random-uuid)} (name p)])])
+
+(defn display
+  "Displays the story."
+  []
+  (let [history          (<sub [::subs/history])
+        curr-text        (<sub [::subs/current-text])
+        prompt-opts      (<sub [::subs/possible-prompts])
+        prompt-opts?     (not (empty? prompt-opts))]
+
+    (println prompt-opts? prompt-opts)
+    [:div.display
+     (for [s history] [:div.history-text {:key (random-uuid)} s])
+     [:div.prompt-text curr-text]
+
+     (when prompt-opts [prompt-options prompt-opts])]))
+
+
+
