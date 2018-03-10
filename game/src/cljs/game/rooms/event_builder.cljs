@@ -1,8 +1,10 @@
 (ns game.rooms.event-builder
   "Events that build the DS's to be dispatched for re-frame.
   These are just maps describing what a call to dispatch will do eventually.
-  These should only be used in the story files"
-  (:require [game.events :as e])
+  These should only be used in the story files
+
+  Uses namespaced keywords to avoid circular dependencies: :game.events/my-event
+  requiring the namespace for it's keywords cases circular deps with the app db."
   )
 
 
@@ -21,5 +23,5 @@
 
 (defn set-curr-text
   [text]
-  {:event ::e/set-current-text
+  {:event :game.events/set-current-text
    :val text})

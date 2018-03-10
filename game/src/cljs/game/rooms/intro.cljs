@@ -1,6 +1,5 @@
 (ns game.rooms.intro
-  (:require [game.rooms.event-builder :as ev]
-            [game.events :as e]))
+  (:require [game.rooms.event-builder :as ev]))
 
 (def intro
   {:complete? false
@@ -50,5 +49,6 @@
     {:text "You grab the watch; it is bulky, and has three large buttons."
      :commands {:push-button-1 [(ev/set-curr-text "Nothing seems to happen.")]
                 :push-button-2 [(ev/set-curr-text "Nothing seems to happen.")]
-                :push-button-3 [(ev/set-curr-text "Everything explodes")]}}}})
+                :push-button-3 [(ev/set-curr-text "A red light blinks on the water intermittently.")]}}}})
+
 
