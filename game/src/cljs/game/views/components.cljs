@@ -26,9 +26,9 @@
 (defn prompt-options
   "Display a list of prompts the user can type in."
   [prompts]
-  [:ul.prompt-opt
+  [:ul.flex
      (for [p prompts]
-        [:li {:key (random-uuid)} (name p)])])
+        [:li.prompt-opt {:key (random-uuid)} (name p)])])
 
 (defn display
   "Displays the story."

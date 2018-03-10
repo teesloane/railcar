@@ -10,10 +10,10 @@
   Events can be delayed and will be sorted by soonest-to-latest in execution order."
   [events]
   (let [sorted-events (sort-by :delay events)]
-    (doseq [{:keys [event event-val delay opts]} sorted-events]
+    (doseq [{:keys [event val delay opts]} sorted-events]
       (cond
-        delay       (u/sleep delay #(>evt [event event-val]))
-        :else       (>evt [event event-val])))))
+        delay       (u/sleep delay #(>evt [event val]))
+        :else       (>evt [event val])))))
 
 
 ;; -- General Events --
@@ -21,7 +21,7 @@
 (re-frame/reg-event-db
  ::initialize-db
  (fn  [_ _]
-   (re-frame/dispatch [:go-to-step :missed-train])
+   (>evt [:go-to-step :see-watch])
    db/default-db))
 
 (re-frame/reg-event-db
@@ -59,6 +59,11 @@
          (update :history conj curr-step-txt)
          (assoc :current-text next-text)))))
 
+
+(re-frame/reg-event-db
+ ::set-current-text
+ (fn [db [_ text]]
+   (assoc db :current-text text)))
 
 (re-frame/reg-event-db
  ::current-step-events
