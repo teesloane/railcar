@@ -14,20 +14,24 @@
   flex-direction: column;
   flex-grow: 1;
   justify-content: flex-end;
-  padding: 24px 24px 8px 24px;
   color: @white;
+}
+
+.story {
+  overflow-y: scroll;
+  margin-top: 18px;
 }
 
 .history-text {
   color: @grey;
-  padding-bottom: 8px;
-  line-height: 1.25
+  padding: 8px 24px;
+  line-height: 1.25;
 }
 
 .prompt-text {
   color: @white;
   line-height: 1.25;
-  padding: 8px 0 16px 0;
+  padding: 16px 24px;
 }
 
 .prompt-opt {
@@ -39,8 +43,8 @@
   font-size: 12px;
   border-radius: 12px;
   align-self: flex-start;
-  margin-right: 8px;
-
+  margin: 0 8px 0 24px
+  // margin-right: 8px;
 }
 
 .prompt {
@@ -48,6 +52,8 @@
   padding: 0 16px;
   align-items: center;
   color: #777;
+  min-height: 48px;
+  margin-top: 16px;
 
   input {
     display: flex;

@@ -6,9 +6,6 @@
             [game.util :refer [<sub >evt]]))
 
 
-
-
-
 (defn prompt
   "Prompt console."
   []
@@ -39,7 +36,8 @@
         prompt-opts?     (not (empty? prompt-opts))]
 
     [:div.display
-     (for [s history] [:div.history-text {:key (random-uuid)} s])
+     [:section.story
+      (for [s history] [:div.history-text {:key (random-uuid)} s])]
      [:div.prompt-text curr-text]
 
      (when prompt-opts [prompt-options prompt-opts])]))
