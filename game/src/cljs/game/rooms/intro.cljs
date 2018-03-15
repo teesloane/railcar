@@ -8,7 +8,7 @@
 
     :missed-train
     {:text "You miss the subway. A new one will be coming shortly, though."
-     :events [(ev/go-to-step :next-subway 6000)]}
+     :events [(ev/go-to-step :next-subway 10000)]}
 
     :next-subway
     {:text "The next subway rolls into the station."
@@ -20,7 +20,7 @@
 
     :board-subway
     {:text "You board the subway and grab a seat; everyone around you is maybe a ghost today; you could have passed through them as you waited to board."
-     :events [(ev/go-to-step :two-stops 2000)]
+     :events [(ev/go-to-step :two-stops 10000)]
      :commands {}}
 
     :two-stops
@@ -34,7 +34,7 @@
 
 
     :cave-train-describe
-    {:text "the train is new, or, at least different. The train is a cavern. You see hte glimmer of subterranean rocks catching the refracted light from the lantern."
+    {:text "the train is new, or, at least different. The train is a cavern. You see the glimmer of subterranean rocks catching the refracted light from the lantern."
      :commands {:north [(ev/go-to-step :get-up-go-north)]}}
 
     :get-up-go-north
