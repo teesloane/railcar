@@ -23,7 +23,7 @@
 (defn prompt-options
   "Display a list of prompts the user can type in."
   [prompts]
-  [:ul.flex
+  [:ul.flex {:style {:min-height "16px"}}
      (for [p prompts]
         [:li.prompt-opt {:key (random-uuid)} (name p)])])
 
@@ -33,13 +33,15 @@
   (let [history          (<sub [::subs/history])
         curr-text        (<sub [::subs/current-text])
         prompt-opts      (<sub [::subs/possible-prompts])
-        prompt-opts?     (not (empty? prompt-opts))]
+        prompt-opts?     (not (empty? prompt-opts))
+        scroll-down!     {:ref #(when % (aset % "scrollTop" (+ 1000 (-> % .-scrollHeight))))}
+        ]
 
     [:div.display
-     [:section.story
-      (for [s history] [:div.history-text {:key (random-uuid)} s])]
+     [:section.story scroll-down!
+      (for [s history]
+        [:div.history-text {:key (random-uuid)} s])]
      [:div.prompt-text curr-text]
-
      (when prompt-opts [prompt-options prompt-opts])]))
 
 

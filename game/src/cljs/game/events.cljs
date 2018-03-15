@@ -21,7 +21,7 @@
 (re-frame/reg-event-db
  ::initialize-db
  (fn  [_ _]
-   (>evt [:go-to-step :see-watch])
+   (>evt [:go-to-step :missed-train])
    db/default-db))
 
 (re-frame/reg-event-db
