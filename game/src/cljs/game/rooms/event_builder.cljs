@@ -10,10 +10,17 @@
 
 (defn go-to-step
   "Advance to a new step."
+  ([next-step delay opts]
+   {:event :go-to-step
+    :val next-step
+    :delay delay
+    :opts opts})
+
   ([next-step delay]
    {:event :go-to-step
     :val next-step
-    :delay delay})
+    :delay delay
+    })
 
   ([next-step]
    {:event :go-to-step
@@ -25,3 +32,11 @@
   [text]
   {:event :game.events/set-current-text
    :val text})
+
+
+(defn take-item
+  [item text]
+  {:event :game.events/take-item
+   :val {:item item
+         :text text
+         }})

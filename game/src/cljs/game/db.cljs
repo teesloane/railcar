@@ -9,6 +9,9 @@
    :current-text (-> intro :steps :missed-train :text) ;; ui only!
    :history []
    :prompt ""
+
+   :inventory {}
+
    ;; -- rooms -- to be organized later.
    :intro intro})
 

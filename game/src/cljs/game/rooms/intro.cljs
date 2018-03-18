@@ -53,8 +53,14 @@
                 :go-north [(ev/go-to-step :first-door)]}}
 
     :first-door
-    {:text "You reach the front of the car. There is a door leading to the next subway car."
-     :commands {:open-door [(ev/go-to-step :first-door-open)]}}
+    {:text "You reach the front of the car, There is a door leading to the next subway car, illuminated by the hanging lantern."
+     :items [{:lantern {:description "an oil lantern" :remaining 90}}]
+     :commands {:open-door [(ev/go-to-step :first-door-open)]
+                ;; :take-item-old [(ev/take-item {:lantern {:description "An oil lantern."
+                ;;                                      :remaining 90}}
+                ;;                           "You pick up a lantern"
+                ;;                           )]
+                }}
 
     :first-door-open
     {:text "You open the door and see a ladder. You crane your neck and look up. There is another subway door at the end of the ladder with blue light emitting from it's window."
