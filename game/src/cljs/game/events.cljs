@@ -3,10 +3,13 @@
             [game.util :as u :refer [>evt]]
             [re-frame.core :as re-frame]))
 
+(def audio-files
+  {:board-subway {:src (js/Audio. "audio/subway.wav")}})
+
 
 (defn batch-events
   "takes a list of custom events formatted for re-frame and dispatches them.
-  ex: {:event :re-frame-event :event-val :re-frame-event-val :delay 5000}
+  ex: {:event :re-frame-event :val :re-frame-event-val :delay 5000}
   Events can be delayed and will be sorted by soonest-to-latest in execution order."
   [events]
   (let [sorted-events (sort-by :delay events)]
@@ -71,4 +74,10 @@
    (batch-events (u/get-curr-step db :events))
    db))
 
+
+(re-frame/reg-event-db
+ :play-audio
+ (fn [db [_ audio]]
+   (.play (-> audio-files audio :src))
+   db))
 

@@ -8,14 +8,12 @@
 
     :missed-train
     {:text "You miss the subway. A new one will be coming shortly, though."
-     :events [(ev/go-to-step :next-subway 10000)]}
+     :events [(ev/go-to-step :next-subway 15000)
+              {:event :play-audio :val :board-subway :delay 3000}
+              ]}
 
     :next-subway
     {:text "The next subway rolls into the station."
-     ;; NOTE: consider -- missing the train again with a secondary delay.
-     ;; This one doesn't work until we find a way to only execute this delay if
-     ;; we are still on the same step.
-     ;; :events [(ev/go-to-step :missed-train 25000 {:required-step :next-subway})]
      :commands {:board [(ev/go-to-step :board-subway)]}}
 
     :board-subway
