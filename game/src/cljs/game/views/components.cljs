@@ -23,7 +23,7 @@
 (defn prompt-options
   "Display a list of prompts the user can type in."
   [prompts]
-  [:ul.flex {:style {:min-height "16px"}}
+  [:ul.flex {:style {:padding-left "24px" :min-height "16px"}}
      (for [p prompts]
         [:li.prompt-opt {:key (random-uuid)} (name p)])])
 

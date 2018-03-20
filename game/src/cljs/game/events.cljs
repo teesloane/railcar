@@ -4,7 +4,8 @@
             [re-frame.core :as re-frame]))
 
 (def audio-files
-  {:board-subway {:src (js/Audio. "audio/subway.wav")}})
+  {:board-subway {:src (js/Audio. "audio/subway.wav")}
+   :match-light  {:src (js/Audio. "audio/match-light.wav")}})
 
 
 (defn batch-events

@@ -20,6 +20,12 @@
     :val next-step}))
 
 
+(defn play-audio
+  ([audio-keyword]
+  {:event :play-audio :val audio-keyword})
+
+  ([audio-keyword delay]
+  {:event :play-audio :val audio-keyword :delay delay}))
 
 (defn set-curr-text
   [text]
