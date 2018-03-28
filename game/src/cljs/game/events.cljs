@@ -39,9 +39,8 @@
 (re-frame/reg-event-db
  ::enter-prompt
  (fn [db [_ prompt]]
-   (let [prompt-key    (keyword prompt) ; "observe" -> :observe
-         curr-step-txt (u/get-curr-step db :text)
-         cmd-events    (u/get-curr-step db :commands prompt-key)]
+   (let [curr-step-txt (u/get-curr-step db :text)
+         cmd-events    (u/get-curr-step db :commands prompt)]
      (batch-events cmd-events)
      (assoc db :prompt ""))))
 
@@ -53,7 +52,7 @@
 
 
 (re-frame/reg-event-db
- :go-to-step ;; needs to be a global keyword; is used by datastructures
+ :go-to-step
  (fn [db [_ next-step]]
    (let [next-text     (-> db :current-room :steps next-step :text)
          curr-step-txt (u/get-curr-step db :text)]
