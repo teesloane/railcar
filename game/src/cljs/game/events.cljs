@@ -9,28 +9,79 @@
                   :fade-time 200
                   :loop false}
    :subway-arrive {:src (js/Audio. "audio/subway_arrive.wav")
-                  :fade-time 200
-                  :loop false}
+                   :volume 0.4
+                   :fade-out-size 0.005
+                   :fade-out-time 300
+                   :loop false}
+
+   :subway-loop   {:src (js/Audio. "audio/subway_loop.wav")
+                   :volume 1
+                   :fade-in-time 100
+                   :fade-in-rate 0.01
+                   :fade-out-time 100
+                   :fade-out-size 0.008
+                   :loop true}
+
+   :shutdown   {:src (js/Audio. "audio/shutdown.wav")
+                :volume 0.7
+
+                :loop false}
+
+   :cave   {:src (js/Audio. "audio/cave.wav")
+            :volume 0.3
+            :fade-in-time 1000
+            :fade-in-rate 0.05
+            :loop false}
+
 
    :match-light  {:src (js/Audio. "audio/match-light.wav")
                   :loop false}})
 
-
 (defn fade-out-audio
-  [file rate]
-  (println "attempting fade out on " file)
-  (def interval (js/setInterval (fn []
-                    (let [current-volume (.-volume file)]
-                      (println "current-volumen is " current-volume)
-                      (if (<= current-volume 0.05)
-                        (do
-                          (println "clearing interfval")
-                        (.pause file)
-                        (js/clearInterval interval)
-                        )
-                        (aset file "volume" (- current-volume 0.04))))
-                    ) rate)))
+  "takes a file and fades it out at a certain rate.
+  Must pass in the file's volume because it might be at 0 based on a fade in;
+  we use the data structure for audio files to determine the volume min/maxes to cap at."
+  ;; [file file-vol rate]
 
+  [{:keys [file file-vol rate dec-size]
+    :or {dec-size 0.02}
+    :as opts}]
+
+  (println "fading out at a rate of " rate "and dec size " dec-size)
+
+  (let [interval-id (atom 0)
+        vol (atom file-vol)]
+    (aset file "volume" file-vol) ;; what the file should be at from a fade in or from just starting.
+    (aset file "loop" false)
+    (println "attempting fade out on " file "with a volume of " (.-volume file) "and is looped? " (.-loop file))
+    (swap! interval-id #(js/setInterval (fn []
+                                            (if (<= @vol 0)
+                                              (do
+                                                (.pause file)
+                                                (println "completed fade out on file")
+                                                (js/clearInterval @interval-id)
+                                                (reset! interval-id 0))
+                                              (do
+                                                (println "current volume is " @vol "dec size is " dec-size)
+                                                (aset file "volume" (swap! vol (fn [e] (- e dec-size)))))
+                                              )) rate))))
+
+(defn fade-in-audio
+  [{:keys [file max-vol rate inc-size]
+    :or {inc-size 0.02}
+    :as opts }]
+  (println "fading in!")
+  (let [interval-id (atom 0)
+        volume       (atom 0)]
+    (aset file "volume" 0)
+    (.play file)
+    (swap! interval-id #(js/setInterval (fn []
+                                            (if (>= @volume max-vol)
+                                              (do
+                                                (js/clearInterval @interval-id)
+                                                (reset! interval-id 0))
+                                              (aset file "volume" (swap! volume (fn [e] (+ e inc-size))))
+                                              )) rate))))
 
 (defn batch-events
   "takes a list of custom events formatted for re-frame and dispatches them.
@@ -43,13 +94,12 @@
         delay       (u/sleep delay #(>evt [event val]))
         :else       (>evt [event val])))))
 
-
 ;; -- General Events --
 
 (re-frame/reg-event-db
  ::initialize-db
  (fn  [_ _]
-   (>evt [:go-to-step :missed-train])
+   (>evt [:go-to-step :match #_:missed-train])
    db/default-db))
 
 (re-frame/reg-event-db
@@ -68,12 +118,10 @@
      (batch-events cmd-events)
      (assoc db :prompt ""))))
 
-
 (re-frame/reg-event-db
  ::change-prompt
  (fn [db [_ prompt]]
    (assoc db :prompt prompt)))
-
 
 (re-frame/reg-event-db
  :go-to-step
@@ -86,7 +134,6 @@
          (update :history conj curr-step-txt)
          (assoc :current-text next-text)))))
 
-
 (re-frame/reg-event-db
  ::set-current-text
  (fn [db [_ text]]
@@ -98,7 +145,6 @@
    (batch-events (u/get-curr-step db :events))
    db))
 
-
 ;; Sets an audio file in the database, then dispatches the event to handle playing it.
 (re-frame/reg-event-db
  :play-audio
@@ -106,34 +152,70 @@
    (let [audio-file (-> audio-files audio)
          loop?      (-> audio-files audio :loop)]
      (if-not loop?
-       (do (>evt [:play-one-shot audio-file]) db)
-       (do (>evt [:play-loop audio-file] db)))
-     )))
+       (do (>evt [:play-one-shot audio-file])
+           db)
+       (do (>evt [:play-loop audio-file])
+           db)))))
 
 (re-frame/reg-event-db
  :stop-audio
  (fn [db [_ _]]
-   (let [audio-map (-> db :audio :one-shot)
-         audio-file (audio-map :src)
-         fade-time (audio-map :fade-time)
-         ]
-     (when (> (.-currentTime audio-file) 0)
-       (fade-out-audio audio-file fade-time))
-     db
-     )))
+   (let [audio-files [(-> db :audio :one-shot) (-> db :audio :loop-a)]]
+     (doseq [f audio-files]
+       (when (and (not (nil? f)) ;; when let probably
+                  (> (.-currentTime (f :src)) 0))
+
+         (println "fade-out time is " (f :fade-out-time))
+         (fade-out-audio {:file (f :src)
+                          :file-vol (f :volume)
+                          :rate (f :fade-out-time)
+                          :dec-size (f :fade-out-size)
+                          })))
+
+     db)))
+
+
+(re-frame/reg-event-db
+ :stop-loop-a
+ (fn [db [_ _]]
+   (let [loop-a (-> db :audio :loop-a)]
+     (when (and (not (nil? loop-a)) ;; when let probably
+                (> (.-currentTime (loop-a :src)) 0))
+       (fade-out-audio {:file (loop-a :src)
+                        :file-vol (loop-a :volume)
+                        :rate (loop-a :fade-out-time)
+                        :dec-size (loop-a :fade-out-size)
+                        })))
+   db))
+
+
 
 (re-frame/reg-event-db
  :play-loop
  (fn [db [_ audio]]
    ;; check if there is a loop playing, and if so, fade it out.
-   (let [curr-audio (-> db :audio :loop-a)]
-     (aset audio "loop" true)
-     (.play audio)
-     (assoc-in db [:audio :loop-a] audio)))
- )
+   (let [audio-file   (audio :src)
+         fade-speed   (audio :fade-in-time)
+         max-vol      (audio :volume)
+         fade-in-rate (audio :fade-in-rate)]
+     (aset audio-file "loop" true)
+     (if (contains? audio :fade-in-time)
+       (fade-in-audio {:file     audio-file
+                       :max-vol  max-vol
+                       :rate     fade-speed
+                       :inc-size fade-in-rate})
+       ;; (.play audio-file)
+       (.play audio-file))
+     (assoc-in db [:audio :loop-a] audio))))
 
 (re-frame/reg-event-db
  :play-one-shot
  (fn [db [_ one-shot]]
-   (.play (one-shot :src))
+
+   (if (contains? one-shot :fade-in-time)
+     (fade-in-audio {:file (one-shot :src)
+                     :max-vol (one-shot :volume)
+                     :fade-speed (one-shot :fade-in-time)
+                     :inc-size (one-shot :fade-in-rate)})
+     (.play (one-shot :src)))
    (assoc-in db [:audio :one-shot] one-shot)))
