@@ -8,13 +8,13 @@
   {:board-subway {:src (js/Audio. "audio/subway.wav")
                   :fade-time 200
                   :loop false}
-   :subway-arrive {:src (js/Audio. "audio/subway_arrive.wav")
+   :subway-arrive {:src (js/Audio. "audio/subway_arrive.mp3")
                    :volume 0.4
                    :fade-out-size 0.005
                    :fade-out-time 300
                    :loop false}
 
-   :subway-loop   {:src (js/Audio. "audio/subway_loop.wav")
+   :subway-loop   {:src (js/Audio. "audio/subway_loop.mp3")
                    :volume 1
                    :fade-in-time 100
                    :fade-in-rate 0.01
@@ -27,14 +27,15 @@
 
                 :loop false}
 
-   :cave   {:src (js/Audio. "audio/cave.wav")
+   :cave   {:src (js/Audio. "audio/cave.mp3")
             :volume 0.3
             :fade-in-time 1000
-            :fade-in-rate 0.05
-            :loop false}
+            :fade-in-rate 0.01
+            :loop true}
 
 
    :match-light  {:src (js/Audio. "audio/match-light.wav")
+                  :volume 0.2
                   :loop false}})
 
 (defn fade-out-audio
@@ -51,7 +52,7 @@
 
   (let [interval-id (atom 0)
         vol (atom file-vol)]
-    (aset file "volume" file-vol) ;; what the file should be at from a fade in or from just starting.
+    (set! (.-volume file) file-vol);; what the file should be at from a fade in or from just starting.
     (aset file "loop" false)
     (println "attempting fade out on " file "with a volume of " (.-volume file) "and is looped? " (.-loop file))
     (swap! interval-id #(js/setInterval (fn []
@@ -70,10 +71,10 @@
   [{:keys [file max-vol rate inc-size]
     :or {inc-size 0.02}
     :as opts }]
-  (println "fading in!")
+  (println "fading in at " inc-size "per " rate)
   (let [interval-id (atom 0)
         volume       (atom 0)]
-    (aset file "volume" 0)
+    (set! (.-volume file) 0)
     (.play file)
     (swap! interval-id #(js/setInterval (fn []
                                             (if (>= @volume max-vol)
@@ -212,10 +213,16 @@
  :play-one-shot
  (fn [db [_ one-shot]]
 
+   (println one-shot)
    (if (contains? one-shot :fade-in-time)
      (fade-in-audio {:file (one-shot :src)
                      :max-vol (one-shot :volume)
-                     :fade-speed (one-shot :fade-in-time)
+                     :rate (one-shot :fade-in-time)
                      :inc-size (one-shot :fade-in-rate)})
-     (.play (one-shot :src)))
+
+     (let [audio (one-shot :src)]
+       (println "one shot volume is " (one-shot :volume))
+       (set! (.-volume audio) (one-shot :volume))
+       (.play audio)
+       ))
    (assoc-in db [:audio :one-shot] one-shot)))
