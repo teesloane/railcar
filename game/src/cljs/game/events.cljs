@@ -3,9 +3,33 @@
             [game.util :as u :refer [>evt]]
             [re-frame.core :as re-frame]))
 
+;; Create new audio objects.
 (def audio-files
-  {:board-subway {:src (js/Audio. "audio/subway.wav")}
-   :match-light  {:src (js/Audio. "audio/match-light.wav")}})
+  {:board-subway {:src (js/Audio. "audio/subway.wav")
+                  :fade-time 200
+                  :loop false}
+   :subway-arrive {:src (js/Audio. "audio/subway_arrive.wav")
+                  :fade-time 200
+                  :loop false}
+
+   :match-light  {:src (js/Audio. "audio/match-light.wav")
+                  :loop false}})
+
+
+(defn fade-out-audio
+  [file rate]
+  (println "attempting fade out on " file)
+  (def interval (js/setInterval (fn []
+                    (let [current-volume (.-volume file)]
+                      (println "current-volumen is " current-volume)
+                      (if (<= current-volume 0.05)
+                        (do
+                          (println "clearing interfval")
+                        (.pause file)
+                        (js/clearInterval interval)
+                        )
+                        (aset file "volume" (- current-volume 0.04))))
+                    ) rate)))
 
 
 (defn batch-events
@@ -75,9 +99,41 @@
    db))
 
 
+;; Sets an audio file in the database, then dispatches the event to handle playing it.
 (re-frame/reg-event-db
  :play-audio
  (fn [db [_ audio]]
-   (.play (-> audio-files audio :src))
-   db))
+   (let [audio-file (-> audio-files audio)
+         loop?      (-> audio-files audio :loop)]
+     (if-not loop?
+       (do (>evt [:play-one-shot audio-file]) db)
+       (do (>evt [:play-loop audio-file] db)))
+     )))
 
+(re-frame/reg-event-db
+ :stop-audio
+ (fn [db [_ _]]
+   (let [audio-map (-> db :audio :one-shot)
+         audio-file (audio-map :src)
+         fade-time (audio-map :fade-time)
+         ]
+     (when (> (.-currentTime audio-file) 0)
+       (fade-out-audio audio-file fade-time))
+     db
+     )))
+
+(re-frame/reg-event-db
+ :play-loop
+ (fn [db [_ audio]]
+   ;; check if there is a loop playing, and if so, fade it out.
+   (let [curr-audio (-> db :audio :loop-a)]
+     (aset audio "loop" true)
+     (.play audio)
+     (assoc-in db [:audio :loop-a] audio)))
+ )
+
+(re-frame/reg-event-db
+ :play-one-shot
+ (fn [db [_ one-shot]]
+   (.play (one-shot :src))
+   (assoc-in db [:audio :one-shot] one-shot)))

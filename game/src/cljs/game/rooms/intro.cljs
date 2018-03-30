@@ -7,17 +7,18 @@
    {
     :missed-train
     {:text "You miss the subway. A new one will be coming shortly, though."
-     :events [(ev/go-to-step :next-subway 2000)
-              #_{:event :play-audio :val :board-subway :delay 3000}]}
+     :events [(ev/go-to-step :next-subway 3500) ; 35000
+              (ev/play-audio :subway-arrive)]}
 
     :next-subway
     {:text "The next subway rolls into the station."
-     :commands {"board" [(ev/go-to-step :board-subway)]}}
+     :commands {"board" [(ev/go-to-step :board-subway)]}
+     :events [{:event :stop-audio :val nil}]}
 
     :board-subway
     {:text "You board the subway and grab a seat; everyone around you is maybe a ghost today; you could have passed through them as you waited to board."
      ;; todo - sound - subway rolling.
-     :events [(ev/go-to-step :two-stops 8000)]
+     :events [(ev/go-to-step :two-stops 800)]
      :commands {}}
 
     :two-stops

@@ -7,7 +7,6 @@
   requiring the namespace for it's keywords cases circular deps with the app db."
   )
 
-
 (defn go-to-step
   "Advance to a new step."
   ([next-step delay]
@@ -18,7 +17,6 @@
   ([next-step]
    {:event :go-to-step
     :val next-step}))
-
 
 (defn play-audio
   ([audio-keyword]

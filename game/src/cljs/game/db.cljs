@@ -10,5 +10,9 @@
    :history []
    :prompt ""
    ;; -- rooms -- to be organized later.
-   :intro intro})
+   :intro intro
+   :audio {:one-shot nil
+           :loop-a nil
+           :loop-b nil}
+   })
 
