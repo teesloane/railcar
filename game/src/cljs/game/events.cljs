@@ -6,24 +6,24 @@
 ;; Create new audio objects.
 (def audio-files
   {:subway-arrive {:src (js/Audio. "audio/subway_arrive.mp3")
-                   :volume 0.4
+                   :volume 1
                    :fade-out-size 0.005
                    :fade-out-time 300
                    :loop false}
 
    :subway-loop   {:src (js/Audio. "audio/subway_loop.mp3")
-                   :volume 1
+                   :volume 0.9
                    :fade-in-time 100
                    :fade-in-rate 0.01
                    :fade-out-time 100
                    :fade-out-size 0.008
                    :loop true}
 
-   :lake-waves-loop   {:src (js/Audio. "audio/lake_waves_loop.wav")
-                       :volume 0.5
-                       :fade-in-time 1300
-                       :fade-in-rate 0.05
-                       :fade-out-time 200
+   :lake-waves-loop   {:src (js/Audio. "audio/lake_waves_loop.mp3")
+                       :volume 1
+                       :fade-in-time 100
+                       :fade-in-rate 0.01
+                       :fade-out-time 100
                        :fade-out-size 0.01
                        :loop true}
 
@@ -41,6 +41,14 @@
             :loop true}
 
 
+   :forest   {:src (js/Audio. "audio/forest_loop2.mp3")
+            :volume 0.6
+            :fade-in-time 1000
+            :fade-in-rate 0.01
+            :fade-out-time 500
+            :fade-out-size 0.01
+            :loop true}
+
    :match-light  {:src (js/Audio. "audio/match-light.mp3")
                   :volume 0.2
                   :loop false}})
@@ -55,21 +63,14 @@
     :or {dec-size 0.02}
     :as opts}]
 
-  (println "fading out at a rate of " rate "and dec size " dec-size)
 
   (let [interval-id (atom 0)
         vol (atom file-vol)]
-    (println "setting the volume file -- " (.-volume file) "to be " file-vol)
-    ;; we probably don't need this:
-    ;; why set teh audio volume louder if it hasn't faded in to that point yet?
-    #_(set! (.-volume file) file-vol);; what the file should be at from a fade in or from just starting.
     (aset file "loop" false)
-    (println "attempting fade out on " file "with a volume of " (.-volume file) "and is looped? " (.-loop file))
     (swap! interval-id #(js/setInterval (fn []
                                             (if (<= @vol 0)
                                               (do
                                                 (.pause file)
-                                                (println "completed fade out on file")
                                                 (js/clearInterval @interval-id)
                                                 (reset! interval-id 0))
                                               (do
@@ -109,7 +110,7 @@
 (re-frame/reg-event-db
  ::initialize-db
  (fn  [_ _]
-   (>evt [:go-to-step :match #_:missed-train])
+   (>evt [:go-to-step #_:climb-ladder :missed-train])
    db/default-db))
 
 (re-frame/reg-event-db
@@ -175,7 +176,7 @@
        (when (and (not (nil? f)) ;; when let probably
                   (> (.-currentTime (f :src)) 0))
 
-         (println "fade-out time is " (f :fade-out-time))
+
          (fade-out-audio {:file (f :src)
                           :file-vol (f :volume)
                           :rate (f :fade-out-time)
@@ -221,8 +222,6 @@
 (re-frame/reg-event-db
  :play-one-shot
  (fn [db [_ one-shot]]
-
-   (println one-shot)
    (if (contains? one-shot :fade-in-time)
      (fade-in-audio {:file (one-shot :src)
                      :max-vol (one-shot :volume)
@@ -230,7 +229,6 @@
                      :inc-size (one-shot :fade-in-rate)})
 
      (let [audio (one-shot :src)]
-       (println "one shot volume is " (one-shot :volume))
        (set! (.-volume audio) (one-shot :volume))
        (.play audio)
        ))

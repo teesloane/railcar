@@ -33,7 +33,7 @@
               (ev/play-audio :shutdown)]}
 
     :match
-    {:text "You hear a scratching sound, followed by a flare of light. Someone has lit a match and you watch as it recedes away from you, towards the front of the subway car. The flame slows its dance to a stop, and disappears for a moment before reappearing housed in a lantern. The light, now at least twice in size, bounces around the train."
+    {:text "You hear a scratching sound, followed by a flare of light. Someone has lit a match and you watch as it recedes away from you, toward the front of the subway car. The flame slows its dance to a stop, and disappears for a moment before reappearing housed in a lantern. The light, now at least twice in size, bounces around the train."
      ;; TODO: add match sound.
      :commands {"observe" [(ev/go-to-step :cave-train-describe)]}
      :events [(ev/play-audio :match-light)]}
@@ -95,18 +95,19 @@
     :third-door-open
     {:text "The sound of waves and the sea breeze diminish behind you before they are replaced by the sound of leaves rustling and birds singly softly."
      :commands {"observe" [(ev/go-to-step :trail-observe-1)]}
-     :events [{:event :stop-loop-a :val nil}]}
+     :events [{:event :stop-loop-a :val nil}
+              (ev/play-audio :forest 1000)]}
 
     :trail-observe-1
     {:text "You are on a dirt trail, it descends as it stretches out before you, converging at a point on the horizon. Sunlight breaks through the canopy at random intervals, spilling light on the trail intermittently."
      :commands {"forward" [(ev/go-to-step :trail-walk-1)]}}
 
     :trail-walk-1
-    {:text "You walk north along the path, stopping at the first splash of sunlight on the trail. Your mind turns around and you remember waiting for the subway, and something about a trip to the sea. You think that your memory is like a contortionist, and you are correct -- it is."
+    {:text "You walk north along the path, stopping at the first splash of sunlight on the trail. Your mind turns around and you remember waiting for the subway, and something about a trip to the sea. You think that your memory is like a contortionist, and you are correct - it is."
      :commands {"forward" [(ev/go-to-step :trail-walk-2)]}}
 
     :trail-walk-2
-    {:text "You continue along the path before stopping at another sunspot. Here you remember the time you spent walking trails when you were younger - trails just like this -- long, narrow, and with an intermittent canopy that would sometimes splash sun across you as you walked."
+    {:text "You continue along the path before stopping at another sunspot. Here you remember the time you spent walking trails when you were younger - trails just like this - long, narrow, and with an intermittent canopy that would sometimes splash sun across you as you walked."
      :commands {"forward" [(ev/go-to-step :trail-walk-3)]}}
 
     :trail-walk-3
@@ -116,4 +117,5 @@
     :trail-walk-4
     {:text "You avoid more sunspots but you know this is ok; you know a journey has to end. As you continue walking the trees shrink and the sun sets. Before long you've reached the final door of the subway. That was quick wasn't it? Everything is normal again, of course. Everything that changed, never changed. You scratch your arm a bit and sigh. It's your stop to get off, but you're at the front of the train, and the stairs out of the station are at the back of the train, where you started."
      ; :commands {"end" [(ev/go-to-step :trail-walk-4)]} ;; no end command
+     :events [{:event :stop-loop-a :val nil}]
      }}})
