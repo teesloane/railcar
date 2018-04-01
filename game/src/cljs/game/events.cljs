@@ -5,10 +5,7 @@
 
 ;; Create new audio objects.
 (def audio-files
-  {:board-subway {:src (js/Audio. "audio/subway.wav")
-                  :fade-time 200
-                  :loop false}
-   :subway-arrive {:src (js/Audio. "audio/subway_arrive.mp3")
+  {:subway-arrive {:src (js/Audio. "audio/subway_arrive.mp3")
                    :volume 0.4
                    :fade-out-size 0.005
                    :fade-out-time 300
@@ -22,7 +19,15 @@
                    :fade-out-size 0.008
                    :loop true}
 
-   :shutdown   {:src (js/Audio. "audio/shutdown.wav")
+   :lake-waves-loop   {:src (js/Audio. "audio/lake_waves_loop.wav")
+                       :volume 0.5
+                       :fade-in-time 1300
+                       :fade-in-rate 0.05
+                       :fade-out-time 200
+                       :fade-out-size 0.01
+                       :loop true}
+
+   :shutdown   {:src (js/Audio. "audio/shutdown.mp3")
                 :volume 0.7
 
                 :loop false}
@@ -31,10 +36,12 @@
             :volume 0.3
             :fade-in-time 1000
             :fade-in-rate 0.01
+            :fade-out-time 200
+            :fade-out-size 0.008
             :loop true}
 
 
-   :match-light  {:src (js/Audio. "audio/match-light.wav")
+   :match-light  {:src (js/Audio. "audio/match-light.mp3")
                   :volume 0.2
                   :loop false}})
 
@@ -52,7 +59,10 @@
 
   (let [interval-id (atom 0)
         vol (atom file-vol)]
-    (set! (.-volume file) file-vol);; what the file should be at from a fade in or from just starting.
+    (println "setting the volume file -- " (.-volume file) "to be " file-vol)
+    ;; we probably don't need this:
+    ;; why set teh audio volume louder if it hasn't faded in to that point yet?
+    #_(set! (.-volume file) file-vol);; what the file should be at from a fade in or from just starting.
     (aset file "loop" false)
     (println "attempting fade out on " file "with a volume of " (.-volume file) "and is looped? " (.-loop file))
     (swap! interval-id #(js/setInterval (fn []
@@ -63,7 +73,6 @@
                                                 (js/clearInterval @interval-id)
                                                 (reset! interval-id 0))
                                               (do
-                                                (println "current volume is " @vol "dec size is " dec-size)
                                                 (aset file "volume" (swap! vol (fn [e] (- e dec-size)))))
                                               )) rate))))
 

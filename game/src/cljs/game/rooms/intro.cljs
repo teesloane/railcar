@@ -36,7 +36,7 @@
     {:text "You hear a scratching sound, followed by a flare of light. Someone has lit a match and you watch as it recedes away from you, towards the front of the subway car. The flame slows its dance to a stop, and disappears for a moment before reappearing housed in a lantern. The light, now at least twice in size, bounces around the train."
      ;; TODO: add match sound.
      :commands {"observe" [(ev/go-to-step :cave-train-describe)]}
-     :events [(ev/play-audio :match-light) #_{:event :play-audio :val :match-light}]}
+     :events [(ev/play-audio :match-light)]}
 
     :cave-train-describe
     {:text "The train is new, or, at least different. The train is a cavern. You see the glimmer of subterranean rocks catching the refracted light from the lantern."
@@ -64,7 +64,8 @@
 
     :first-door-open
     {:text "You open the door and see a ladder. You crane your neck and look up. There is another subway door at the end of the ladder with blue light emitting from it's window."
-     :commands {"climb ladder" [(ev/go-to-step :climb-ladder)]}}
+     :commands {"climb ladder" [(ev/go-to-step :climb-ladder)]}
+     :events [{:event :stop-loop-a :val nil}]}
 
     :climb-ladder
     {:text "You climb the ladder, passing rows of subway seats embedded in the narrow passageway on your way up. You reach another subway door."
@@ -72,7 +73,8 @@
 
     :second-door-open
     {:text "You open the door and it swings open, just brushing your arm as you cling to the ladder. A breeze hits you. It smells like the sea and you feel more awake then you have in a long time.  Behind the door is a ledge. You climb onto it."
-     :commands {"observe" [(ev/go-to-step :bridge-observe-1)]}}
+     :commands {"observe" [(ev/go-to-step :bridge-observe-1)]}
+     :events [(ev/play-audio :lake-waves-loop)]}
 
     :bridge-observe-1
     {:text "With your back turned on the cavern behind you, you face a long narrow stretch of water. The sun is shining across the water and something in you tells you that you could stay here for a long time and, wouldn't that be nice?"
@@ -92,7 +94,8 @@
 
     :third-door-open
     {:text "The sound of waves and the sea breeze diminish behind you before they are replaced by the sound of leaves rustling and birds singly softly."
-     :commands {"observe" [(ev/go-to-step :trail-observe-1)]}}
+     :commands {"observe" [(ev/go-to-step :trail-observe-1)]}
+     :events [{:event :stop-loop-a :val nil}]}
 
     :trail-observe-1
     {:text "You are on a dirt trail, it descends as it stretches out before you, converging at a point on the horizon. Sunlight breaks through the canopy at random intervals, spilling light on the trail intermittently."
