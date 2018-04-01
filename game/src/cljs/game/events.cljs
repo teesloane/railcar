@@ -28,7 +28,7 @@
                        :loop true}
 
    :shutdown   {:src (js/Audio. "audio/shutdown.mp3")
-                :volume 0.7
+                :volume 0.8
 
                 :loop false}
 
