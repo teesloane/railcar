@@ -106,6 +106,12 @@
    db/default-db))
 
 (re-frame/reg-event-db
+ ::start-game
+ (fn  [db _]
+   (js/console.log "Initializing railcar...")
+   (assoc db :started? true)))
+
+(re-frame/reg-event-db
  ::set-active-panel
  (fn [db [_ active-panel]]
    (assoc db :active-panel active-panel)))

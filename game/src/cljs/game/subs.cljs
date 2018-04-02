@@ -12,6 +12,7 @@
 ;; easily be clearable by other elements on the screen.
 
 (reg-sub ::active-panel    (fn [db _] (:active-panel db)))
+(reg-sub ::started?        (fn [db _] (:started? db)))
 (reg-sub ::prompt          (fn [db _] (:prompt db)))
 (reg-sub ::history         (fn [db _] (-> db :history)))
 (reg-sub ::current-room    (fn [db _] (-> db :current-room)))

@@ -3,7 +3,8 @@
 
 
 (def default-db
-  {:current-room intro
+  {:started? false
+   :current-room intro
    :current-command ""
    :current-step nil ;; set in ::initialize-db
    :current-text (-> intro :steps :missed-train :text) ;; ui only!
