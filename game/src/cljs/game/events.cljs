@@ -102,14 +102,15 @@
 (re-frame/reg-event-db
  ::initialize-db
  (fn  [_ _]
-   (>evt [:go-to-step  :missed-train])
    db/default-db))
 
 (re-frame/reg-event-db
  ::start-game
  (fn  [db _]
    (js/console.log "Initializing railcar...")
+   (>evt [:go-to-step  :missed-train])
    (assoc db :started? true)))
+
 
 (re-frame/reg-event-db
  ::set-active-panel

@@ -251,6 +251,7 @@ samp {
   }
 }
 .start-btn {
+  cursor: pointer;
   opacity: 0;
   animation-name: fadein;
   animation-duration: 3s;
