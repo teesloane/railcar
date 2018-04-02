@@ -34,7 +34,6 @@
 
     :match
     {:text "You hear a scratching sound, followed by a flare of light. Someone has lit a match and you watch as it recedes away from you, toward the front of the subway car. The flame slows its dance to a stop, and disappears for a moment before reappearing housed in a lantern. The light, now at least twice in size, bounces around the train."
-     ;; TODO: add match sound.
      :commands {"observe" [(ev/go-to-step :cave-train-describe)]}
      :events [(ev/play-audio :match-light)]}
 
@@ -86,7 +85,8 @@
 
     :bridge-observe-2
     {:text "You could stand here forever, for some time. For some time, forever, perhaps. The sun is washing over you and you consider the waves as they consider you, passing below your feet endlessly."
-     :commands {"forward" [(ev/go-to-step :bridge-walk-2)]}}
+     :commands {"forward" [(ev/go-to-step :bridge-walk-2)]}
+     :events [(ev/play-audio :music)]}
 
     :bridge-walk-2
     {:text "You continue walking north. As you expected, another subway door emerges before you; or perhaps, you passed through something and emerged before it. Behind you now, you think of the moment recently passed; standing as if in the middle of everything."

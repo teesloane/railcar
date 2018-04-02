@@ -5,20 +5,18 @@
 
 ;; Create new audio objects.
 (def audio-files
-  {:subway-arrive {:src (js/Audio. "audio/subway_arrive.mp3")
-                   :volume 1
-                   :fade-out-size 0.005
-                   :fade-out-time 300
-                   :loop false}
-
-   :subway-loop   {:src (js/Audio. "audio/subway_loop.mp3")
-                   :volume 0.9
-                   :fade-in-time 100
-                   :fade-in-rate 0.01
-                   :fade-out-time 100
-                   :fade-out-size 0.008
-                   :loop true}
-
+  {:subway-arrive     {:src (js/Audio. "audio/subway_arrive.mp3")
+                       :volume 1
+                       :fade-out-size 0.005
+                       :fade-out-time 300
+                       :loop false}
+   :subway-loop       {:src (js/Audio. "audio/subway_loop.mp3")
+                       :volume 0.9
+                       :fade-in-time 100
+                       :fade-in-rate 0.01
+                       :fade-out-time 100
+                       :fade-out-size 0.008
+                       :loop true}
    :lake-waves-loop   {:src (js/Audio. "audio/lake_waves_loop.mp3")
                        :volume 1
                        :fade-in-time 100
@@ -26,32 +24,30 @@
                        :fade-out-time 100
                        :fade-out-size 0.01
                        :loop true}
-
-   :shutdown   {:src (js/Audio. "audio/shutdown.mp3")
-                :volume 0.8
-
-                :loop false}
-
-   :cave   {:src (js/Audio. "audio/cave.mp3")
-            :volume 0.3
-            :fade-in-time 1000
-            :fade-in-rate 0.01
-            :fade-out-time 200
-            :fade-out-size 0.008
-            :loop true}
-
-
-   :forest   {:src (js/Audio. "audio/forest_loop2.mp3")
-            :volume 0.6
-            :fade-in-time 1000
-            :fade-in-rate 0.01
-            :fade-out-time 500
-            :fade-out-size 0.01
-            :loop true}
-
-   :match-light  {:src (js/Audio. "audio/match-light.mp3")
-                  :volume 0.2
-                  :loop false}})
+   :shutdown          {:src (js/Audio. "audio/shutdown.mp3")
+                       :volume 0.8
+                       :loop false}
+   :cave              {:src (js/Audio. "audio/cave.mp3")
+                       :volume 0.3
+                       :fade-in-time 1000
+                       :fade-in-rate 0.01
+                       :fade-out-time 200
+                       :fade-out-size 0.008
+                       :loop true}
+   :music             {:src (js/Audio. "audio/music.mp3")
+                       :volume 1
+                       :loop false
+                       }
+   :forest            {:src (js/Audio. "audio/forest_loop2.mp3")
+                       :volume 0.6
+                       :fade-in-time 1000
+                       :fade-in-rate 0.01
+                       :fade-out-time 500
+                       :fade-out-size 0.01
+                       :loop true}
+   :match-light       {:src (js/Audio. "audio/match-light.mp3")
+                       :volume 0.2
+                       :loop false}})
 
 (defn fade-out-audio
   "takes a file and fades it out at a certain rate.
@@ -62,37 +58,33 @@
   [{:keys [file file-vol rate dec-size]
     :or {dec-size 0.02}
     :as opts}]
-
-
   (let [interval-id (atom 0)
         vol (atom file-vol)]
     (aset file "loop" false)
     (swap! interval-id #(js/setInterval (fn []
-                                            (if (<= @vol 0)
-                                              (do
-                                                (.pause file)
-                                                (js/clearInterval @interval-id)
-                                                (reset! interval-id 0))
-                                              (do
-                                                (aset file "volume" (swap! vol (fn [e] (- e dec-size)))))
-                                              )) rate))))
+                                          (if (<= @vol 0)
+                                            (do
+                                              (.pause file)
+                                              (js/clearInterval @interval-id)
+                                              (reset! interval-id 0))
+                                            (do
+                                              (aset file "volume" (swap! vol (fn [e] (- e dec-size))))))) rate))))
 
 (defn fade-in-audio
   [{:keys [file max-vol rate inc-size]
     :or {inc-size 0.02}
-    :as opts }]
+    :as opts}]
   (println "fading in at " inc-size "per " rate)
   (let [interval-id (atom 0)
         volume       (atom 0)]
     (set! (.-volume file) 0)
     (.play file)
     (swap! interval-id #(js/setInterval (fn []
-                                            (if (>= @volume max-vol)
-                                              (do
-                                                (js/clearInterval @interval-id)
-                                                (reset! interval-id 0))
-                                              (aset file "volume" (swap! volume (fn [e] (+ e inc-size))))
-                                              )) rate))))
+                                          (if (>= @volume max-vol)
+                                            (do
+                                              (js/clearInterval @interval-id)
+                                              (reset! interval-id 0))
+                                            (aset file "volume" (swap! volume (fn [e] (+ e inc-size)))))) rate))))
 
 (defn batch-events
   "takes a list of custom events formatted for re-frame and dispatches them.
@@ -110,7 +102,7 @@
 (re-frame/reg-event-db
  ::initialize-db
  (fn  [_ _]
-   (>evt [:go-to-step #_:climb-ladder :missed-train])
+   (>evt [:go-to-step  :missed-train])
    db/default-db))
 
 (re-frame/reg-event-db
@@ -174,17 +166,12 @@
    (let [audio-files [(-> db :audio :one-shot) (-> db :audio :loop-a)]]
      (doseq [f audio-files]
        (when (and (not (nil? f)) ;; when let probably
-                  (> (.-currentTime (f :src)) 0))
-
-
-         (fade-out-audio {:file (f :src)
-                          :file-vol (f :volume)
-                          :rate (f :fade-out-time)
-                          :dec-size (f :fade-out-size)
-                          })))
+                  (> (.-currentTime (f :src)) 0)) (fade-out-audio {:file (f :src)
+                                                                   :file-vol (f :volume)
+                                                                   :rate (f :fade-out-time)
+                                                                   :dec-size (f :fade-out-size)})))
 
      db)))
-
 
 (re-frame/reg-event-db
  :stop-loop-a
@@ -195,11 +182,8 @@
        (fade-out-audio {:file (loop-a :src)
                         :file-vol (loop-a :volume)
                         :rate (loop-a :fade-out-time)
-                        :dec-size (loop-a :fade-out-size)
-                        })))
+                        :dec-size (loop-a :fade-out-size)})))
    db))
-
-
 
 (re-frame/reg-event-db
  :play-loop
@@ -230,6 +214,5 @@
 
      (let [audio (one-shot :src)]
        (set! (.-volume audio) (one-shot :volume))
-       (.play audio)
-       ))
+       (.play audio)))
    (assoc-in db [:audio :one-shot] one-shot)))
