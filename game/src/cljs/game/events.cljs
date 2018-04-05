@@ -124,7 +124,8 @@
  ::enter-prompt
  (fn [db [_ prompt]]
    (let [curr-step-txt (u/get-curr-step db :text)
-         cmd-events    (u/get-curr-step db :commands prompt)]
+         prompt-n      (-> prompt .toLowerCase .trim)
+         cmd-events    (u/get-curr-step db :commands prompt-n)]
      (batch-events cmd-events)
      (assoc db :prompt ""))))
 
