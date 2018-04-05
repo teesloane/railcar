@@ -7,3 +7,5 @@ todo.org
 game/.nrepl-port
 assets/soundtrack/*
 assets/poster.afdesign
+
+*.wav
