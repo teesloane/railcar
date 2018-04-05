@@ -74,7 +74,7 @@
   [{:keys [file max-vol rate inc-size]
     :or {inc-size 0.02}
     :as opts}]
-  (println "fading in at " inc-size "per " rate)
+  ;; (println "fading in at " inc-size "per " rate)
   (let [interval-id (atom 0)
         volume       (atom 0)]
     (set! (.-volume file) 0)
