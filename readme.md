@@ -4,12 +4,12 @@
 
 Railcar is a short, interactive story that runs in your browser. Headphones recommended.
 
-![](docs/screens/railcar_poster_bg.png)
+![](assets/screens/railcar_poster_bg.png)
 
 
 ## Screens
 
 
-![](docs/screens/railcar_0.png)
+![](assets/screens/railcar_0.png)
 
-![](docs/screens/railcar_1.png)
+![](assets/screens/railcar_1.png)

@@ -5,5 +5,5 @@ tmp/
 
 todo.org
 game/.nrepl-port
-docs/soundtrack/*
-docs/poster.afdesign
+assets/soundtrack/*
+assets/poster.afdesign
